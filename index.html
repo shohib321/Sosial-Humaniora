@@ -1,0 +1,1990 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Absensi Riset</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --ios-blue: #007AFF;
+      --ios-green: #34C759;
+      --ios-red: #FF3B30;
+      --ios-purple: #5856D6;
+      --ios-orange: #FF9500;
+      --ios-gray: #8E8E93;
+      --ios-light-gray: #F2F2F7;
+      --ios-dark-gray: #1C1C1E;
+      --ios-card-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    
+    * {
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: var(--ios-light-gray);
+      color: var(--ios-dark-gray);
+      -webkit-font-smoothing: antialiased;
+    }
+    
+    header {
+      padding: 16px;
+      text-align: center;
+      background: #fff;
+      font-size: 20px;
+      font-weight: 600;
+      box-shadow: var(--ios-card-shadow);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    
+    main {
+      padding: 16px;
+      max-width: 600px;
+      margin: 0 auto;
+      padding-bottom: 70px;
+    }
+    
+    .button {
+      width: 100%;
+      padding: 14px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      color: #fff;
+      background: var(--ios-blue);
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    
+    .button:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+    
+    .button:active {
+      transform: translateY(0);
+    }
+    
+    .button.secondary {
+      background: var(--ios-green);
+    }
+    
+    .button.danger {
+      background: var(--ios-red);
+    }
+    
+    .button.history {
+      background: var(--ios-purple);
+    }
+    
+    .button.rekap {
+      background: var(--ios-orange);
+    }
+    
+    .button.whatsapp {
+      background: #25D366;
+    }
+    
+    .button.outline {
+      background: transparent;
+      border: 1px solid var(--ios-blue);
+      color: var(--ios-blue);
+    }
+    
+    .hidden { 
+      display: none; 
+    }
+    
+    .container {
+      background: #fff;
+      padding: 16px;
+      margin-bottom: 16px;
+      border-radius: 14px;
+      box-shadow: var(--ios-card-shadow);
+    }
+    
+    .container h3 {
+      margin-top: 0;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--ios-dark-gray);
+    }
+    
+    .form-group {
+      margin-bottom: 16px;
+    }
+    
+    label {
+      font-weight: 500;
+      margin-bottom: 6px;
+      display: block;
+      font-size: 14px;
+      color: var(--ios-gray);
+    }
+    
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #E5E5EA;
+      border-radius: 10px;
+      font-size: 16px;
+      font-family: 'Inter', sans-serif;
+      background: #fff;
+    }
+    
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--ios-blue);
+    }
+    
+    input:valid {
+      border-color: #E5E5EA;
+    }
+    
+    input:invalid {
+      border-color: var(--ios-red);
+    }
+    
+    .time-input-group {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    
+    .time-input-group input {
+      flex: 1;
+    }
+    
+    .student-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #E5E5EA;
+    }
+    
+    .student-item:last-child {
+      border-bottom: none;
+    }
+    
+    .attendance-options {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .attendance-options label {
+      display: flex;
+      align-items: center;
+      margin-left: 0;
+      font-weight: normal;
+      color: var(--ios-dark-gray);
+    }
+    
+    .attendance-options input[type="radio"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #E5E5EA;
+      border-radius: 50%;
+      margin-right: 4px;
+      position: relative;
+      cursor: pointer;
+    }
+    
+    .attendance-options input[type="radio"]:checked {
+      border-color: var(--ios-blue);
+    }
+    
+    .attendance-options input[type="radio"]:checked::after {
+      content: '';
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: var(--ios-blue);
+      border-radius: 50%;
+      top: 3px;
+      left: 3px;
+    }
+    
+    .session-item {
+      padding: 12px;
+      background: var(--ios-light-gray);
+      margin-bottom: 8px;
+      border-radius: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .session-item:hover {
+      background: #E5E5EA;
+    }
+    
+    .session-actions {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .session-actions button {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 16px;
+      transition: all 0.2s ease;
+    }
+    
+    .session-actions button:hover {
+      transform: scale(1.1);
+    }
+    
+    .session-actions .edit-btn {
+      background: var(--ios-blue);
+      color: white;
+    }
+    
+    .session-actions .delete-btn {
+      background: var(--ios-red);
+      color: white;
+    }
+    
+    .session-actions .whatsapp-btn {
+      background: #25D366;
+      color: white;
+    }
+    
+    .success-message {
+      background: var(--ios-green);
+      color: white;
+      padding: 16px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      animation: fadeIn 0.3s ease;
+    }
+    
+    .error-message {
+      background: var(--ios-red);
+      color: white;
+      padding: 16px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      animation: fadeIn 0.3s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .tab-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #fff;
+      display: flex;
+      justify-content: space-around;
+      padding: 12px 0;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+      z-index: 100;
+    }
+    
+    .tab-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: var(--ios-gray);
+      font-size: 12px;
+      cursor: pointer;
+    }
+    
+    .tab-item.active {
+      color: var(--ios-blue);
+    }
+    
+    .tab-item i {
+      font-size: 20px;
+      margin-bottom: 4px;
+    }
+    
+    .status-badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 500;
+      margin-left: 8px;
+    }
+    
+    .status-hadir { background: #D5F0DC; color: #1F7F3D; }
+    .status-alpha { background: #FFE5E5; color: #D92D20; }
+    .status-sakit { background: #FFEFD0; color: #DC6803; }
+    .status-ijin { background: #E8F3FF; color: #175CD3; }
+    
+    .back-button {
+      position: absolute;
+      left: 16px;
+      top: 16px;
+      background: none;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      color: var(--ios-blue);
+    }
+    
+    .header-title {
+      font-weight: 600;
+    }
+    
+    .time-range {
+      font-weight: normal;
+      color: var(--ios-gray);
+      font-size: 14px;
+    }
+    
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .export-buttons {
+      display: flex;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    
+    .export-buttons button {
+      flex: 1;
+    }
+    
+    /* New styles for student management */
+    .student-management-section {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    
+    .student-list-container {
+      max-height: 400px;
+      overflow-y: auto;
+      border: 1px solid #E5E5EA;
+      border-radius: 12px;
+      padding: 8px;
+    }
+    
+    .student-list-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      border-bottom: 1px solid #E5E5EA;
+    }
+    
+    .student-list-item:last-child {
+      border-bottom: none;
+    }
+    
+    .student-actions {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .student-actions button {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    
+    .student-actions .edit-student-btn {
+      background: var(--ios-blue);
+      color: white;
+    }
+    
+    .student-actions .delete-student-btn {
+      background: var(--ios-red);
+      color: white;
+    }
+    
+    .add-student-form {
+      display: flex;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    
+    .add-student-form input {
+      flex: 1;
+      padding: 10px;
+    }
+    
+    .add-student-form button {
+      padding: 10px 16px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <button class="back-button hidden" id="back-button"><i class="fas fa-chevron-left"></i></button>
+  <div class="header-title">Absensi Riset Sosial Humaniora</div>
+</header>
+
+<main>
+  <!-- Success Message -->
+  <div id="success-message" class="success-message hidden">
+    <i class="fas fa-check-circle"></i>
+    <span id="success-text">Absensi berhasil disimpan!</span>
+  </div>
+  
+  <!-- Error Message -->
+  <div id="error-message" class="error-message hidden">
+    <i class="fas fa-exclamation-circle"></i>
+    <span id="error-text"></span>
+  </div>
+
+  <!-- Home Section -->
+  <div id="home-section">
+    <button class="button" onclick="startNewSession()">
+      <i class="fas fa-plus"></i> Sesi Baru
+    </button>
+    <button class="button history" onclick="showHistory()">
+      <i class="fas fa-history"></i> History
+    </button>
+    <button class="button rekap" onclick="showRekap()">
+      <i class="fas fa-chart-bar"></i> Rekap Per Siswa
+    </button>
+    <button class="button secondary" onclick="showAllRekap()">
+      <i class="fas fa-users"></i> Rekap Semua Siswa
+    </button>
+    <button class="button outline" onclick="showStudentManagement()">
+      <i class="fas fa-user-edit"></i> Kelola Siswa
+    </button>
+  </div>
+
+  <!-- Form Input Session -->
+  <div id="form-section" class="container hidden">
+    <h3><i class="fas fa-calendar-plus"></i> Buat Sesi Absensi</h3>
+    <div class="form-group">
+      <label><i class="far fa-calendar"></i> Tanggal</label>
+      <input type="date" id="date">
+    </div>
+    <div class="form-group">
+      <label><i class="far fa-clock"></i> Waktu</label>
+      <div class="time-input-group">
+        <input type="time" id="start-time" value="07:00" min="05:00" max="18:00" step="900">
+        <span>sampai</span>
+        <input type="time" id="end-time" value="12:00" min="05:00" max="18:00" step="900">
+      </div>
+      <small style="color: var(--ios-gray); display: block; margin-top: 4px;">Format: HH:MM (contoh: 07:00-12:00)</small>
+    </div>
+    <div class="form-group">
+      <label><i class="fas fa-users"></i> Kelas Riset</label>
+      <input type="text" id="class" placeholder="Contoh: Riset XII IPA 1">
+    </div>
+    <div class="form-group">
+      <label><i class="fas fa-chalkboard-teacher"></i> Nama Guru</label>
+      <input type="text" id="teacher" placeholder="Nama guru pengampu">
+    </div>
+    <button class="button secondary" onclick="saveSessionInfo()">
+      <i class="fas fa-arrow-right"></i> Lanjut ke Absensi
+    </button>
+  </div>
+
+  <!-- Absensi siswa -->
+  <div id="attendance-section" class="container hidden">
+    <h3><i class="fas fa-user-check"></i> Absensi Peserta Didik</h3>
+    <div id="students-list"></div>
+    <button class="button secondary" onclick="saveAttendance()">
+      <i class="fas fa-save"></i> Simpan Absensi
+    </button>
+  </div>
+
+  <!-- History sesi -->
+  <div id="history-section" class="hidden">
+    <div class="container">
+      <h3><i class="fas fa-history"></i> History Absensi</h3>
+      <div id="sessions-list"></div>
+    </div>
+  </div>
+
+  <!-- Rekap per siswa -->
+  <div id="rekap-section" class="hidden">
+    <div class="container">
+      <h3><i class="fas fa-chart-bar"></i> Rekap Absensi Per Siswa</h3>
+      <div class="form-group">
+        <label><i class="fas fa-calendar-day"></i> Dari Tanggal</label>
+        <input type="date" id="rekap-start">
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-calendar-week"></i> Sampai Tanggal</label>
+        <input type="date" id="rekap-end">
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-user-graduate"></i> Pilih Siswa</label>
+        <select id="rekap-student"></select>
+      </div>
+      <button class="button secondary" onclick="generateRekap()">
+        <i class="fas fa-search"></i> Lihat Rekap
+      </button>
+      <div id="rekap-result" style="margin-top:16px; padding: 12px; background: var(--ios-light-gray); border-radius: 12px;"></div>
+    </div>
+  </div>
+  
+  <!-- Rekap semua siswa -->
+  <div id="all-rekap-section" class="hidden">
+    <div class="container">
+      <h3><i class="fas fa-users"></i> Rekap Semua Siswa</h3>
+      <div class="form-group">
+        <label><i class="fas fa-calendar-day"></i> Dari Tanggal</label>
+        <input type="date" id="all-rekap-start">
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-calendar-week"></i> Sampai Tanggal</label>
+        <input type="date" id="all-rekap-end">
+      </div>
+      <button class="button secondary" onclick="generateAllRekap()">
+        <i class="fas fa-search"></i> Lihat Rekap
+      </button>
+      <div class="export-buttons">
+        <button class="button whatsapp" onclick="exportAllRekapToWhatsApp()">
+          <i class="fab fa-whatsapp"></i> Share
+        </button>
+        <button class="button" onclick="exportAllRekapToSheets()">
+          <i class="fas fa-file-excel"></i> Export
+        </button>
+      </div>
+      <div id="all-rekap-result" style="margin-top:16px; max-height: 500px; overflow-y: auto;"></div>
+    </div>
+  </div>
+  
+  <!-- WhatsApp Share Section -->
+  <div id="whatsapp-section" class="container hidden">
+    <h3><i class="fab fa-whatsapp"></i> Bagikan via WhatsApp</h3>
+    <p>Absensi telah disimpan. Bagikan hasil absensi via WhatsApp:</p>
+    <button class="button whatsapp" onclick="shareToWhatsApp()">
+      <i class="fab fa-whatsapp"></i> Share ke WhatsApp
+    </button>
+    <button class="button outline" onclick="goHome()">
+      <i class="fas fa-home"></i> Kembali ke Beranda
+    </button>
+  </div>
+  
+  <!-- Student Management Section -->
+  <div id="student-management-section" class="container hidden">
+    <h3><i class="fas fa-user-edit"></i> Kelola Daftar Siswa</h3>
+    
+    <div class="student-management-section">
+      <div class="form-group">
+        <label><i class="fas fa-plus-circle"></i> Tambah Siswa Baru</label>
+        <div class="add-student-form">
+          <input type="text" id="new-student-name" placeholder="Nama lengkap siswa">
+          <button class="button secondary" onclick="addNewStudent()">
+            <i class="fas fa-plus"></i> Tambah
+          </button>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label><i class="fas fa-users"></i> Daftar Siswa</label>
+        <div class="student-list-container" id="student-list-container">
+          <!-- Student list will be populated here -->
+        </div>
+      </div>
+      
+      <button class="button outline" onclick="goHome()">
+        <i class="fas fa-arrow-left"></i> Kembali
+      </button>
+    </div>
+  </div>
+  
+  <!-- Edit Student Modal -->
+  <div id="edit-student-modal" class="container hidden" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000; width: 90%; max-width: 400px;">
+    <h3><i class="fas fa-user-edit"></i> Edit Siswa</h3>
+    <div class="form-group">
+      <label><i class="fas fa-user"></i> Nama Siswa</label>
+      <input type="text" id="edit-student-name">
+      <input type="hidden" id="edit-student-id">
+    </div>
+    <div style="display: flex; gap: 8px;">
+      <button class="button secondary" onclick="updateStudent()">
+        <i class="fas fa-save"></i> Simpan
+      </button>
+      <button class="button danger" onclick="closeEditModal()">
+        <i class="fas fa-times"></i> Batal
+      </button>
+    </div>
+  </div>
+  
+  <!-- Modal Overlay -->
+  <div id="modal-overlay" class="hidden" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 999;"></div>
+</main>
+
+<div class="tab-bar">
+  <div class="tab-item active" onclick="goHome()">
+    <i class="fas fa-home"></i>
+    <span>Beranda</span>
+  </div>
+  <div class="tab-item" onclick="showHistory()">
+    <i class="fas fa-history"></i>
+    <span>History</span>
+  </div>
+  <div class="tab-item" onclick="showRekap()">
+    <i class="fas fa-chart-pie"></i>
+    <span>Rekap</span>
+  </div>
+</div>
+
+<script>
+  // --- Variable & Settings ---
+  let db;
+  let students = [];
+  let sessionData = {};
+  let editMode = false;
+  let editSessionId = null;
+  const SHEET_ID = "1f7f-9dUZN_9VnlZFxvUllW1xVjXDALVd2dQrQluCoik";
+  const SHEET_NAME = "Absensi";
+  const STUDENT_SHEET = "Siswa";
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyQ2cPl-P-j_ZC2qz3-X1Kt1Itp9DzqLyJ__OSbtej0Ui_MWgalpb68BF_SVtNqDqD0vg/exec";
+
+  // Initialize the app and IndexedDB
+  document.addEventListener('DOMContentLoaded', function() {
+    initDB();
+    
+    // Set current date and time as default
+    const now = new Date();
+    document.getElementById('date').valueAsDate = now;
+    
+    // Set rekap date range (default: current month)
+    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+    const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    document.getElementById('rekap-start').valueAsDate = firstDay;
+    document.getElementById('rekap-end').valueAsDate = lastDay;
+    document.getElementById('all-rekap-start').valueAsDate = firstDay;
+    document.getElementById('all-rekap-end').valueAsDate = lastDay;
+    
+    // Back button functionality
+    document.getElementById('back-button').addEventListener('click', goHome);
+    
+    // Time validation
+    document.getElementById('end-time').addEventListener('change', validateTimeInputs);
+    document.getElementById('start-time').addEventListener('change', function() {
+      document.getElementById('end-time').min = this.value;
+      validateTimeInputs();
+    });
+  });
+
+  // Initialize IndexedDB
+  function initDB() {
+    const request = indexedDB.open('AbsensiDB', 2); // Version 2 for student management
+    
+    request.onerror = function(event) {
+      console.error("Database error:", event.target.error);
+      showError('Gagal membuka database lokal');
+    };
+    
+    request.onsuccess = function(event) {
+      db = event.target.result;
+      loadStudents();
+    };
+    
+    request.onupgradeneeded = function(event) {
+      const db = event.target.result;
+      const oldVersion = event.oldVersion;
+      
+      if (oldVersion < 1) {
+        // Create object store for sessions
+        const sessionStore = db.createObjectStore('sessions', { keyPath: 'id' });
+        sessionStore.createIndex('date', 'date', { unique: false });
+        
+        // Create object store for students
+        const studentStore = db.createObjectStore('students', { keyPath: 'id' });
+        studentStore.createIndex('name', 'name', { unique: true });
+      }
+      
+      if (oldVersion < 2) {
+        // Upgrade to version 2 - no changes needed as we already have students store
+      }
+    };
+  }
+
+  function validateTimeInputs() {
+    const startTime = document.getElementById('start-time').value;
+    const endTime = document.getElementById('end-time').value;
+    
+    if (startTime && endTime && startTime >= endTime) {
+      showError('Waktu selesai harus setelah waktu mulai');
+      document.getElementById('end-time').value = '';
+      return false;
+    }
+    return true;
+  }
+
+  // --- Functions for Section Management ---
+  function hideAll() {
+    document.getElementById('home-section').classList.add('hidden');
+    document.getElementById('form-section').classList.add('hidden');
+    document.getElementById('attendance-section').classList.add('hidden');
+    document.getElementById('history-section').classList.add('hidden');
+    document.getElementById('rekap-section').classList.add('hidden');
+    document.getElementById('all-rekap-section').classList.add('hidden');
+    document.getElementById('whatsapp-section').classList.add('hidden');
+    document.getElementById('student-management-section').classList.add('hidden');
+    document.getElementById('success-message').classList.add('hidden');
+    document.getElementById('error-message').classList.add('hidden');
+    
+    // Hide back button on home screen
+    if (document.getElementById('home-section').classList.contains('hidden')) {
+      document.getElementById('back-button').classList.remove('hidden');
+    } else {
+      document.getElementById('back-button').classList.add('hidden');
+    }
+    
+    // Update tab bar active state
+    updateTabBar();
+  }
+  
+  function updateTabBar() {
+    const tabs = document.querySelectorAll('.tab-item');
+    tabs.forEach(tab => tab.classList.remove('active'));
+    
+    if (!document.getElementById('home-section').classList.contains('hidden')) {
+      tabs[0].classList.add('active');
+    } else if (!document.getElementById('history-section').classList.contains('hidden')) {
+      tabs[1].classList.add('active');
+    } else if (!document.getElementById('rekap-section').classList.contains('hidden') || 
+               !document.getElementById('all-rekap-section').classList.contains('hidden')) {
+      tabs[2].classList.add('active');
+    }
+  }
+
+  function goHome() {
+    hideAll();
+    document.getElementById('home-section').classList.remove('hidden');
+    closeEditModal();
+  }
+
+  function startNewSession() {
+    hideAll();
+    document.getElementById('form-section').classList.remove('hidden');
+    editMode = false;
+    
+    // Reset form
+    const now = new Date();
+    document.getElementById('date').valueAsDate = now;
+    document.getElementById('start-time').value = '14:05';
+    document.getElementById('end-time').value = '15:15';
+    document.getElementById('class').value = 'Sosial Humaniora';
+    document.getElementById('teacher').value = 'Shohib Furqon Farizi';
+  }
+
+  function showHistory() {
+    hideAll();
+    document.getElementById('history-section').classList.remove('hidden');
+    loadHistory();
+  }
+
+  function showRekap() {
+    hideAll();
+    document.getElementById('rekap-section').classList.remove('hidden');
+    populateRekapStudents();
+  }
+  
+  function showAllRekap() {
+    hideAll();
+    document.getElementById('all-rekap-section').classList.remove('hidden');
+  }
+  
+  function showWhatsAppShare() {
+    hideAll();
+    document.getElementById('whatsapp-section').classList.remove('hidden');
+  }
+  
+  function showStudentManagement() {
+    hideAll();
+    document.getElementById('student-management-section').classList.remove('hidden');
+    loadStudentList();
+  }
+  
+  function closeEditModal() {
+    document.getElementById('edit-student-modal').classList.add('hidden');
+    document.getElementById('modal-overlay').classList.add('hidden');
+  }
+  
+  function openEditModal(student) {
+    document.getElementById('edit-student-id').value = student.id;
+    document.getElementById('edit-student-name').value = student.name;
+    document.getElementById('edit-student-modal').classList.remove('hidden');
+    document.getElementById('modal-overlay').classList.remove('hidden');
+  }
+
+  // --- Student Management Functions ---
+  function loadStudentList() {
+    const transaction = db.transaction(['students'], 'readonly');
+    const store = transaction.objectStore('students');
+    const request = store.getAll();
+    
+    request.onsuccess = function(event) {
+      const students = event.target.result;
+      const container = document.getElementById('student-list-container');
+      container.innerHTML = '';
+      
+      if (students.length === 0) {
+        container.innerHTML = '<p style="text-align:center;color:var(--ios-gray);">Belum ada data siswa</p>';
+        return;
+      }
+      
+      students.forEach(student => {
+        const div = document.createElement('div');
+        div.className = 'student-list-item';
+        div.innerHTML = `
+          <span>${student.name}</span>
+          <div class="student-actions">
+            <button class="edit-student-btn" onclick="editStudent(${student.id})">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button class="delete-student-btn" onclick="deleteStudent(${student.id})">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    };
+    
+    request.onerror = function(event) {
+      console.error("Error loading students:", event.target.error);
+      showError('Gagal memuat daftar siswa');
+    };
+  }
+  
+  function addNewStudent() {
+    const name = document.getElementById('new-student-name').value.trim();
+    
+    if (!name) {
+      showError('Nama siswa tidak boleh kosong');
+      return;
+    }
+    
+    const transaction = db.transaction(['students'], 'readwrite');
+    const store = transaction.objectStore('students');
+    
+    // Check if student already exists
+    const nameIndex = store.index('name');
+    const checkRequest = nameIndex.get(name);
+    
+    checkRequest.onsuccess = function(event) {
+      if (event.target.result) {
+        showError('Siswa dengan nama tersebut sudah ada');
+        return;
+      }
+      
+      // Add new student
+      const newStudent = {
+        id: Date.now(),
+        name: name
+      };
+      
+      const addRequest = store.add(newStudent);
+      
+      addRequest.onsuccess = function() {
+        document.getElementById('new-student-name').value = '';
+        showSuccess('Siswa berhasil ditambahkan');
+        loadStudentList();
+        loadStudents(); // Refresh the students array
+        populateRekapStudents(); // Update the student dropdown in rekap section
+        
+        // Sync with Google Sheets
+        syncStudentsWithSheets();
+      };
+      
+      addRequest.onerror = function(event) {
+        console.error("Error adding student:", event.target.error);
+        showError('Gagal menambahkan siswa');
+      };
+    };
+    
+    checkRequest.onerror = function(event) {
+      console.error("Error checking student:", event.target.error);
+      showError('Gagal memeriksa data siswa');
+    };
+  }
+  
+  function editStudent(id) {
+    const transaction = db.transaction(['students'], 'readonly');
+    const store = transaction.objectStore('students');
+    const request = store.get(id);
+    
+    request.onsuccess = function(event) {
+      const student = event.target.result;
+      if (student) {
+        openEditModal(student);
+      }
+    };
+    
+    request.onerror = function(event) {
+      console.error("Error getting student:", event.target.error);
+      showError('Gagal memuat data siswa');
+    };
+  }
+  
+  function updateStudent() {
+    const id = parseInt(document.getElementById('edit-student-id').value);
+    const newName = document.getElementById('edit-student-name').value.trim();
+    
+    if (!newName) {
+      showError('Nama siswa tidak boleh kosong');
+      return;
+    }
+    
+    const transaction = db.transaction(['students', 'sessions'], 'readwrite');
+    const studentStore = transaction.objectStore('students');
+    const sessionStore = transaction.objectStore('sessions');
+    
+    // First get the old student data
+    const getRequest = studentStore.get(id);
+    
+    getRequest.onsuccess = function(event) {
+      const student = event.target.result;
+      if (!student) {
+        showError('Siswa tidak ditemukan');
+        return;
+      }
+      
+      const oldName = student.name;
+      
+      // Check if new name already exists (excluding the current student)
+      const nameIndex = studentStore.index('name');
+      const checkRequest = nameIndex.get(newName);
+      
+      checkRequest.onsuccess = function(event) {
+        if (event.target.result && event.target.result.id !== id) {
+          showError('Siswa dengan nama tersebut sudah ada');
+          return;
+        }
+        
+        // Update the student name
+        student.name = newName;
+        const updateRequest = studentStore.put(student);
+        
+        updateRequest.onsuccess = function() {
+          // Update all sessions that reference this student
+          const sessionRequest = sessionStore.getAll();
+          
+          sessionRequest.onsuccess = function(event) {
+            const sessions = event.target.result;
+            sessions.forEach(session => {
+              if (session.students && session.students[oldName] !== undefined) {
+                const status = session.students[oldName];
+                delete session.students[oldName];
+                session.students[newName] = status;
+                sessionStore.put(session);
+              }
+            });
+            
+            closeEditModal();
+            showSuccess('Data siswa berhasil diperbarui');
+            loadStudentList();
+            loadStudents(); // Refresh the students array
+            populateRekapStudents(); // Update the student dropdown in rekap section
+            
+            // Sync with Google Sheets
+            syncStudentsWithSheets();
+          };
+          
+          sessionRequest.onerror = function(event) {
+            console.error("Error updating sessions:", event.target.error);
+            showError('Gagal memperbarui data absensi terkait');
+          };
+        };
+        
+        updateRequest.onerror = function(event) {
+          console.error("Error updating student:", event.target.error);
+          showError('Gagal memperbarui data siswa');
+        };
+      };
+      
+      checkRequest.onerror = function(event) {
+        console.error("Error checking student name:", event.target.error);
+        showError('Gagal memeriksa data siswa');
+      };
+    };
+    
+    getRequest.onerror = function(event) {
+      console.error("Error getting student:", event.target.error);
+      showError('Gagal memuat data siswa');
+    };
+  }
+  
+  function deleteStudent(id) {
+    if (!confirm('Yakin ingin menghapus siswa ini? Semua data absensinya juga akan dihapus.')) {
+      return;
+    }
+    
+    const transaction = db.transaction(['students', 'sessions'], 'readwrite');
+    const studentStore = transaction.objectStore('students');
+    const sessionStore = transaction.objectStore('sessions');
+    
+    // First get the student to get the name
+    const getRequest = studentStore.get(id);
+    
+    getRequest.onsuccess = function(event) {
+      const student = event.target.result;
+      if (!student) {
+        showError('Siswa tidak ditemukan');
+        return;
+      }
+      
+      const studentName = student.name;
+      
+      // Delete the student
+      const deleteRequest = studentStore.delete(id);
+      
+      deleteRequest.onsuccess = function() {
+        // Remove this student from all sessions
+        const sessionRequest = sessionStore.getAll();
+        
+        sessionRequest.onsuccess = function(event) {
+          const sessions = event.target.result;
+          sessions.forEach(session => {
+            if (session.students && session.students[studentName] !== undefined) {
+              delete session.students[studentName];
+              sessionStore.put(session);
+            }
+          });
+          
+          showSuccess('Siswa berhasil dihapus');
+          loadStudentList();
+          loadStudents(); // Refresh the students array
+          populateRekapStudents(); // Update the student dropdown in rekap section
+          
+          // Sync with Google Sheets
+          syncStudentsWithSheets();
+        };
+        
+        sessionRequest.onerror = function(event) {
+          console.error("Error updating sessions:", event.target.error);
+          showError('Gagal memperbarui data absensi terkait');
+        };
+      };
+      
+      deleteRequest.onerror = function(event) {
+        console.error("Error deleting student:", event.target.error);
+        showError('Gagal menghapus siswa');
+      };
+    };
+    
+    getRequest.onerror = function(event) {
+      console.error("Error getting student:", event.target.error);
+      showError('Gagal memuat data siswa');
+    };
+  }
+  
+  function syncStudentsWithSheets() {
+    if (!SCRIPT_URL || SCRIPT_URL === "https://script.google.com/macros/s/AKfycbyQ2cPl-P-j_ZC2qz3-X1Kt1Itp9DzqLyJ__OSbtej0Ui_MWgalpb68BF_SVtNqDqD0vg/exec") {
+      console.log('Google Script URL not configured for student sync');
+      return;
+    }
+    
+    const transaction = db.transaction(['students'], 'readonly');
+    const store = transaction.objectStore('students');
+    const request = store.getAll();
+    
+    request.onsuccess = function(event) {
+      const students = event.target.result.map(s => s.name);
+      
+      fetch(SCRIPT_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          action: 'syncStudents',
+          students: students
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Students synced with Google Sheets:', data);
+      })
+      .catch(error => {
+        console.error('Error syncing students with Sheets:', error);
+      });
+    };
+    
+    request.onerror = function(event) {
+      console.error("Error loading students for sync:", event.target.error);
+    };
+  }
+
+  // --- Database Operations ---
+  function loadStudents() {
+    return new Promise((resolve, reject) => {
+      if (!db) {
+        reject('Database not initialized');
+        return;
+      }
+      
+      const transaction = db.transaction(['students'], 'readonly');
+      const store = transaction.objectStore('students');
+      const request = store.getAll();
+      
+      request.onsuccess = function(event) {
+        students = event.target.result.map(s => s.name);
+        
+        // If no students in IndexedDB, try to load from Google Sheets
+        if (students.length === 0) {
+          loadStudentsFromSheets().then(() => resolve(students)).catch(reject);
+        } else {
+          resolve(students);
+        }
+      };
+      
+      request.onerror = function(event) {
+        console.error("Error loading students:", event.target.error);
+        reject(event.target.error);
+      };
+    });
+  }
+  
+  function loadStudentsFromSheets() {
+    return new Promise((resolve, reject) => {
+      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${STUDENT_SHEET}`;
+      
+      fetch(url)
+        .then(res => res.text())
+        .then(text => {
+          const json = JSON.parse(text.substr(47).slice(0, -2));
+          const sheetStudents = json.table.rows.map(row => row.c[0].v);
+          
+          // Save to IndexedDB
+          const transaction = db.transaction(['students'], 'readwrite');
+          const store = transaction.objectStore('students');
+          
+          sheetStudents.forEach((name, index) => {
+            store.put({ id: index + 1, name: name });
+          });
+          
+          students = sheetStudents;
+          resolve(students);
+        })
+        .catch(err => {
+          console.error("Error loading students from Sheets:", err);
+          // If we can't load from Sheets, initialize with some default students
+          const defaultStudents = [
+            "Siswa 1", "Siswa 2", "Siswa 3"
+          ];
+          
+          const transaction = db.transaction(['students'], 'readwrite');
+          const store = transaction.objectStore('students');
+          
+          defaultStudents.forEach((name, index) => {
+            store.put({ id: index + 1, name: name });
+          });
+          
+          students = defaultStudents;
+          resolve(students);
+        });
+    });
+  }
+
+  function saveSessionInfo() {
+    const date = document.getElementById('date').value;
+    const startTime = document.getElementById('start-time').value;
+    const endTime = document.getElementById('end-time').value;
+    const classVal = document.getElementById('class').value;
+    const teacher = document.getElementById('teacher').value;
+    
+    if (!date || !startTime || !endTime || !classVal || !teacher) {
+      showError('Harap lengkapi semua field!');
+      return;
+    }
+    
+    if (!validateTimeInputs()) {
+      return;
+    }
+    
+    sessionData = {
+      id: editMode ? editSessionId : Date.now(),
+      date: date,
+      startTime: startTime,
+      endTime: endTime,
+      class: classVal,
+      teacher: teacher,
+      students: {}
+    };
+    showAttendanceForm();
+  }
+
+  async function showAttendanceForm() {
+    hideAll();
+    document.getElementById('attendance-section').classList.remove('hidden');
+    await loadStudents();
+    const list = document.getElementById('students-list');
+    list.innerHTML = '';
+    
+    students.forEach(name => {
+      const div = document.createElement('div');
+      div.className = 'student-item';
+      
+      // Check if we're editing and this student already has a status
+      const existingStatus = editMode && sessionData.students[name] ? sessionData.students[name] : 'Hadir';
+      
+      div.innerHTML = `
+        <div style="display: flex; flex-direction: column;">
+        <div>${name}</div>
+        <div class="attendance-options" style="margin-top: 8px;">
+          <label>
+            <input type="radio" name="${name}" value="Hadir" ${existingStatus === 'Hadir' ? 'checked' : ''}>
+            <span class="status-badge status-hadir">Hadir</span>
+          </label>
+          <label>
+            <input type="radio" name="${name}" value="Alpha" ${existingStatus === 'Alpha' ? 'checked' : ''}>
+            <span class="status-badge status-alpha">Alpha</span>
+          </label>
+          <label>
+            <input type="radio" name="${name}" value="Sakit" ${existingStatus === 'Sakit' ? 'checked' : ''}>
+            <span class="status-badge status-sakit">Sakit</span>
+          </label>
+          <label>
+            <input type="radio" name="${name}" value="Ijin" ${existingStatus === 'Ijin' ? 'checked' : ''}>
+            <span class="status-badge status-ijin">Ijin</span>
+          </label>
+        </div>
+      `;
+      list.appendChild(div);
+    });
+  }
+
+  function saveAttendance() {
+    students.forEach(name => {
+      const radios = document.getElementsByName(name);
+      radios.forEach(radio => {
+        if (radio.checked) {
+          sessionData.students[name] = radio.value;
+        }
+      });
+    });
+    
+    const transaction = db.transaction(['sessions'], 'readwrite');
+    const store = transaction.objectStore('sessions');
+    
+    const request = editMode ? store.put(sessionData) : store.add(sessionData);
+    
+    request.onsuccess = function() {
+      // Show success message
+      document.getElementById('success-text').textContent = editMode ? 
+        'Absensi berhasil diperbarui!' : 'Absensi berhasil disimpan!';
+      document.getElementById('success-message').classList.remove('hidden');
+      
+      // Save to Google Sheets
+      saveToGoogleSheets();
+      
+      // Show WhatsApp share option
+      setTimeout(() => {
+        showWhatsAppShare();
+      }, 1500);
+    };
+    
+    request.onerror = function(event) {
+      console.error("Error saving session:", event.target.error);
+      showError('Gagal menyimpan absensi ke database lokal');
+    };
+  }
+  
+  function saveToGoogleSheets() {
+    if (!SCRIPT_URL || SCRIPT_URL === "https://script.google.com/macros/s/AKfycbyQ2cPl-P-j_ZC2qz3-X1Kt1Itp9DzqLyJ__OSbtej0Ui_MWgalpb68BF_SVtNqDqD0vg/exec") {
+      console.log('Google Script URL not configured');
+      return;
+    }
+    
+    const data = {
+      date: sessionData.date,
+      startTime: sessionData.startTime,
+      endTime: sessionData.endTime,
+      class: sessionData.class,
+      teacher: sessionData.teacher,
+      students: Object.entries(sessionData.students).map(([name, status]) => ({
+        name: name,
+        status: status
+      }))
+    };
+    
+    fetch(SCRIPT_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Successfully saved to Google Sheets:', data);
+    })
+    .catch(error => {
+      console.error('Error saving to Google Sheets:', error);
+    });
+  }
+
+  function loadHistory() {
+    const transaction = db.transaction(['sessions'], 'readonly');
+    const store = transaction.objectStore('sessions');
+    const index = store.index('date');
+    const request = index.getAll();
+    
+    request.onsuccess = function(event) {
+      const sessions = event.target.result;
+      const list = document.getElementById('sessions-list');
+      list.innerHTML = '';
+      
+      if (sessions.length === 0) {
+        list.innerHTML = '<p style="text-align:center;color:var(--ios-gray);">Belum ada data absensi</p>';
+        return;
+      }
+      
+      // Sort by date (newest first)
+      sessions.sort((a, b) => new Date(b.date + ' ' + b.startTime) - new Date(a.date + ' ' + a.startTime));
+      
+      sessions.forEach(session => {
+        const div = document.createElement('div');
+        div.className = 'session-item';
+        div.innerHTML = `
+          <div onclick="showSessionDetail(${session.id})">
+            <strong>${formatDate(session.date)}</strong>
+            <div class="time-range">${session.startTime} - ${session.endTime}</div>
+            ${session.class} - ${session.teacher}
+          </div>
+          <div class="session-actions">
+            <button class="edit-btn" onclick="editSession(event,${session.id})">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button class="delete-btn" onclick="deleteSession(event,${session.id})">
+              <i class="fas fa-trash"></i>
+            </button>
+            <button class="whatsapp-btn" onclick="shareSessionToWhatsApp(event,${session.id})">
+              <i class="fab fa-whatsapp"></i>
+            </button>
+          </div>
+        `;
+        list.appendChild(div);
+      });
+    };
+    
+    request.onerror = function(event) {
+      console.error("Error loading sessions:", event.target.error);
+      showError('Gagal memuat history absensi');
+    };
+  }
+  
+  function formatDate(dateString) {
+    const options = { weekday: 'long',day: '2-digit', month: '2-digit', year: 'numeric' };
+    return new Date(dateString).toLocaleDateString('id-ID', options);
+  }
+
+  function editSession(event, id) {
+    event.stopPropagation();
+    const transaction = db.transaction(['sessions'], 'readonly');
+    const store = transaction.objectStore('sessions');
+    const request = store.get(id);
+    
+    request.onsuccess = function(event) {
+      const session = event.target.result;
+      if (session) {
+        document.getElementById('date').value = session.date;
+        document.getElementById('start-time').value = session.startTime;
+        document.getElementById('end-time').value = session.endTime;
+        document.getElementById('class').value = session.class;
+        document.getElementById('teacher').value = session.teacher;
+        editMode = true;
+        editSessionId = session.id;
+        sessionData = {...session};
+        startNewSession();
+      }
+    };
+    
+    request.onerror = function(event) {
+      console.error("Error getting session:", event.target.error);
+      showError('Gagal memuat data sesi');
+    };
+  }
+
+  function deleteSession(event, id) {
+    event.stopPropagation();
+    if (confirm('Yakin ingin menghapus sesi ini?')) {
+      const transaction = db.transaction(['sessions'], 'readwrite');
+      const store = transaction.objectStore('sessions');
+      const request = store.delete(id);
+      
+      request.onsuccess = function() {
+        loadHistory();
+        showSuccess('Sesi absensi berhasil dihapus');
+      };
+      
+      request.onerror = function(event) {
+        console.error("Error deleting session:", event.target.error);
+        showError('Gagal menghapus sesi absensi');
+      };
+    }
+  }
+  
+  function showSessionDetail(id) {
+    const transaction = db.transaction(['sessions'], 'readonly');
+    const store = transaction.objectStore('sessions');
+    const request = store.get(id);
+    
+    request.onsuccess = function(event) {
+      const session = event.target.result;
+      
+      if (session) {
+        hideAll();
+        const container = document.createElement('div');
+        container.className = 'container';
+        
+        let content = `
+          <h3><i class="fas fa-info-circle"></i> Detail Absensi</h3>
+          <p><strong>Tanggal:</strong> ${formatDate(session.date)}</p>
+          <p><strong>Waktu:</strong> ${session.startTime} - ${session.endTime}</p>
+          <p><strong>Kelas:</strong> ${session.class}</p>
+          <p><strong>Guru:</strong> ${session.teacher}</p>
+          <h4 style="margin-top:16px;">Daftar Siswa:</h4>
+          <div style="max-height:400px;overflow-y:auto;">
+        `;
+        
+        Object.entries(session.students).forEach(([name, status]) => {
+          let statusClass = '';
+          if (status === 'Hadir') statusClass = 'status-hadir';
+          else if (status === 'Alpha') statusClass = 'status-alpha';
+          else if (status === 'Sakit') statusClass = 'status-sakit';
+          else if (status === 'Ijin') statusClass = 'status-ijin';
+          
+          content += `
+            <div class="student-item">
+              <div>${name}</div>
+              <span class="status-badge ${statusClass}">${status}</span>
+            </div>
+          `;
+        });
+        
+        content += `</div>`;
+        container.innerHTML = content;
+        
+        // Add back button
+        const backButton = document.createElement('button');
+        backButton.className = 'button';
+        backButton.style.marginTop = '16px';
+        backButton.innerHTML = '<i class="fas fa-arrow-left"></i> Kembali';
+        backButton.onclick = showHistory;
+        container.appendChild(backButton);
+        
+        // Add WhatsApp share button
+        const whatsappButton = document.createElement('button');
+        whatsappButton.className = 'button whatsapp';
+        whatsappButton.style.marginTop = '8px';
+        whatsappButton.innerHTML = '<i class="fab fa-whatsapp"></i> Share via WhatsApp';
+        whatsappButton.onclick = function() {
+          shareSessionToWhatsApp(null, session.id);
+        };
+        container.appendChild(whatsappButton);
+        
+        document.getElementById('history-section').appendChild(container);
+        document.getElementById('history-section').classList.remove('hidden');
+      }
+    };
+    
+    request.onerror = function(event) {
+      console.error("Error getting session:", event.target.error);
+      showError('Gagal memuat detail sesi');
+    };
+  }
+
+  function populateRekapStudents() {
+    const select = document.getElementById('rekap-student');
+    select.innerHTML = '';
+    
+    loadStudents().then(() => {
+      students.forEach(name => {
+        const opt = document.createElement('option');
+        opt.value = name;
+        opt.textContent = name;
+        select.appendChild(opt);
+      });
+    }).catch(err => {
+      console.error("Error loading students:", err);
+      showError('Gagal memuat daftar siswa');
+    });
+  }
+
+  function generateRekap() {
+    const start = document.getElementById('rekap-start').value;
+    const end = document.getElementById('rekap-end').value;
+    const name = document.getElementById('rekap-student').value;
+    
+    if (!start || !end || !name) {
+      showError('Harap lengkapi semua field!');
+      return;
+    }
+    
+    const transaction = db.transaction(['sessions'], 'readonly');
+    const store = transaction.objectStore('sessions');
+    const index = store.index('date');
+    const range = IDBKeyRange.bound(start, end);
+    const request = index.getAll(range);
+    
+    request.onsuccess = function(event) {
+      const sessions = event.target.result;
+      let hadir = 0, alpha = 0, sakit = 0, ijin = 0;
+      let detailRekap = [];
+      
+      sessions.forEach(session => {
+        const status = session.students[name];
+        if (status === 'Hadir') hadir++;
+        else if (status === 'Alpha') alpha++;
+        else if (status === 'Sakit') sakit++;
+        else if (status === 'Ijin') ijin++;
+        
+        if (status) {
+          detailRekap.push({
+            date: session.date,
+            startTime: session.startTime,
+            endTime: session.endTime,
+            class: session.class,
+            teacher: session.teacher,
+            status: status
+          });
+        }
+      });
+      
+      // Format the result nicely
+      let resultHTML = `
+        <h4 style="margin-top:0;">Rekap ${name}</h4>
+        <p>Periode: ${formatDate(start)} - ${formatDate(end)}</p>
+        <div style="display:flex; justify-content:space-between; margin:12px 0;">
+          <span class="status-badge status-hadir">Hadir: ${hadir}</span>
+          <span class="status-badge status-alpha">Alpha: ${alpha}</span>
+          <span class="status-badge status-sakit">Sakit: ${sakit}</span>
+          <span class="status-badge status-ijin">Ijin: ${ijin}</span>
+        </div>
+        <h4>Detail Absensi:</h4>
+      `;
+      
+      if (detailRekap.length > 0) {
+        detailRekap.forEach(item => {
+          let statusClass = '';
+          if (item.status === 'Hadir') statusClass = 'status-hadir';
+          else if (item.status === 'Alpha') statusClass = 'status-alpha';
+          else if (item.status === 'Sakit') statusClass = 'status-sakit';
+          else if (item.status === 'Ijin') statusClass = 'status-ijin';
+          
+          resultHTML += `
+            <div style="padding:8px 0; border-bottom:1px solid #eee;">
+              <div><strong>${formatDate(item.date)} ${item.startTime}-${item.endTime}</strong></div>
+              <div>${item.class} - ${item.teacher}</div>
+              <div style="text-align:right;">
+                <span class="status-badge ${statusClass}">${item.status}</span>
+              </div>
+            </div>
+          `;
+        });
+      } else {
+        resultHTML += '<p>Tidak ada data absensi untuk periode ini.</p>';
+      }
+      
+      document.getElementById('rekap-result').innerHTML = resultHTML;
+    };
+    
+    request.onerror = function(event) {
+      console.error("Error generating report:", event.target.error);
+      showError('Gagal memuat data rekap');
+    };
+  }
+  
+  function generateAllRekap() {
+    const start = document.getElementById('all-rekap-start').value;
+    const end = document.getElementById('all-rekap-end').value;
+    
+    if (!start || !end) {
+      showError('Harap lengkapi tanggal!');
+      return;
+    }
+    
+    const transaction = db.transaction(['sessions', 'students'], 'readonly');
+    const sessionStore = transaction.objectStore('sessions');
+    const studentStore = transaction.objectStore('students');
+    const index = sessionStore.index('date');
+    const range = IDBKeyRange.bound(start, end);
+    const sessionRequest = index.getAll(range);
+    const studentRequest = studentStore.getAll();
+    
+    Promise.all([
+      new Promise(resolve => {
+        sessionRequest.onsuccess = e => resolve(e.target.result);
+        sessionRequest.onerror = e => reject(e.target.error);
+      }),
+      new Promise(resolve => {
+        studentRequest.onsuccess = e => resolve(e.target.result);
+        studentRequest.onerror = e => reject(e.target.error);
+      })
+    ]).then(([sessions, students]) => {
+      const studentNames = students.map(s => s.name);
+      const report = {};
+      
+      // Initialize report for each student
+      studentNames.forEach(name => {
+        report[name] = {
+          hadir: 0,
+          alpha: 0,
+          sakit: 0,
+          ijin: 0,
+          total: 0
+        };
+      });
+      
+      // Process each session
+      sessions.forEach(session => {
+        studentNames.forEach(name => {
+          const status = session.students[name];
+          if (status) {
+            report[name].total++;
+            if (status === 'Hadir') report[name].hadir++;
+            else if (status === 'Alpha') report[name].alpha++;
+            else if (status === 'Sakit') report[name].sakit++;
+            else if (status === 'Ijin') report[name].ijin++;
+          }
+        });
+      });
+      
+      // Generate HTML
+      let resultHTML = `
+        <h4 style="margin-top:0;">Rekap Semua Siswa</h4>
+        <p>Periode: ${formatDate(start)} - ${formatDate(end)}</p>
+        <div style="overflow-x:auto;">
+          <table style="width:100%; border-collapse:collapse;">
+            <thead>
+              <tr>
+                <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">Nama Siswa</th>
+                <th style="text-align:center; padding:8px; border-bottom:1px solid #eee;">Hadir</th>
+                <th style="text-align:center; padding:8px; border-bottom:1px solid #eee;">Alpha</th>
+                <th style="text-align:center; padding:8px; border-bottom:1px solid #eee;">Sakit</th>
+                <th style="text-align:center; padding:8px; border-bottom:1px solid #eee;">Ijin</th>
+                <th style="text-align:center; padding:8px; border-bottom:1px solid #eee;">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+      `;
+      
+      studentNames.forEach(name => {
+        const stat = report[name];
+        resultHTML += `
+          <tr>
+            <td style="padding:8px; border-bottom:1px solid #eee;">${name}</td>
+            <td style="text-align:center; padding:8px; border-bottom:1px solid #eee;" class="status-hadir">${stat.hadir}</td>
+            <td style="text-align:center; padding:8px; border-bottom:1px solid #eee;" class="status-alpha">${stat.alpha}</td>
+            <td style="text-align:center; padding:8px; border-bottom:1px solid #eee;" class="status-sakit">${stat.sakit}</td>
+            <td style="text-align:center; padding:8px; border-bottom:1px solid #eee;" class="status-ijin">${stat.ijin}</td>
+            <td style="text-align:center; padding:8px; border-bottom:1px solid #eee;">${stat.total}</td>
+          </tr>
+        `;
+      });
+      
+      resultHTML += `
+            </tbody>
+          </table>
+        </div>
+      `;
+      
+      document.getElementById('all-rekap-result').innerHTML = resultHTML;
+    }).catch(error => {
+      console.error("Error generating all report:", error);
+      showError('Gagal memuat rekap semua siswa');
+    });
+  }
+  
+  function exportAllRekapToWhatsApp() {
+    const start = document.getElementById('all-rekap-start').value;
+    const end = document.getElementById('all-rekap-end').value;
+    
+    if (!start || !end) {
+      showError('Harap lengkapi tanggal!');
+      return;
+    }
+    
+    const transaction = db.transaction(['sessions', 'students'], 'readonly');
+    const sessionStore = transaction.objectStore('sessions');
+    const studentStore = transaction.objectStore('students');
+    const index = sessionStore.index('date');
+    const range = IDBKeyRange.bound(start, end);
+    const sessionRequest = index.getAll(range);
+    const studentRequest = studentStore.getAll();
+    
+    Promise.all([
+      new Promise(resolve => {
+        sessionRequest.onsuccess = e => resolve(e.target.result);
+        sessionRequest.onerror = e => reject(e.target.error);
+      }),
+      new Promise(resolve => {
+        studentRequest.onsuccess = e => resolve(e.target.result);
+        studentRequest.onerror = e => reject(e.target.error);
+      })
+    ]).then(([sessions, students]) => {
+      const studentNames = students.map(s => s.name);
+      const report = {};
+      
+      // Initialize report for each student
+      studentNames.forEach(name => {
+        report[name] = {
+          hadir: 0,
+          alpha: 0,
+          sakit: 0,
+          ijin: 0,
+          total: 0
+        };
+      });
+      
+      // Process each session
+      sessions.forEach(session => {
+        studentNames.forEach(name => {
+          const status = session.students[name];
+          if (status) {
+            report[name].total++;
+            if (status === 'Hadir') report[name].hadir++;
+            else if (status === 'Alpha') report[name].alpha++;
+            else if (status === 'Sakit') report[name].sakit++;
+            else if (status === 'Ijin') report[name].ijin++;
+          }
+        });
+      });
+      
+      // Generate WhatsApp message
+      let message = `*Assalamualaikum wr wb. Berikut Absesnsi Sosial Humaniora*\n\n`;
+      message += `📅 Periode: ${formatDate(start)} - ${formatDate(end)}\n\n`;
+      message += `*Rincian Kehadiran:*\n`;
+      
+      studentNames.forEach(name => {
+        const stat = report[name];
+        message += `➡ ${name}: H ${stat.hadir} | A ${stat.alpha} | S ${stat.sakit} | I ${stat.ijin} | Total ${stat.total}\n`;
+      });
+      
+      message += `\n_Dikirim dari Aplikasi Absensi Riset_`;
+      
+      // Encode the message for URL
+      const encodedMessage = encodeURIComponent(message);
+      const whatsappUrl = `https://wa.me/?text=${encodedMessage}`;
+      
+      // Open in new tab
+      window.open(whatsappUrl, '_blank');
+    }).catch(error => {
+      console.error("Error exporting report:", error);
+      showError('Gagal membuat rekap untuk WhatsApp');
+    });
+  }
+  
+  function exportAllRekapToSheets() {
+    const start = document.getElementById('all-rekap-start').value;
+    const end = document.getElementById('all-rekap-end').value;
+    
+    if (!start || !end) {
+      showError('Harap lengkapi tanggal!');
+      return;
+    }
+    
+    if (!SCRIPT_URL || SCRIPT_URL === "https://script.google.com/macros/s/AKfycbyQ2cPl-P-j_ZC2qz3-X1Kt1Itp9DzqLyJ__OSbtej0Ui_MWgalpb68BF_SVtNqDqD0vg/exec") {
+      showError('Google Script URL belum dikonfigurasi');
+      return;
+    }
+    
+    const transaction = db.transaction(['sessions', 'students'], 'readonly');
+    const sessionStore = transaction.objectStore('sessions');
+    const studentStore = transaction.objectStore('students');
+    const index = sessionStore.index('date');
+    const range = IDBKeyRange.bound(start, end);
+    const sessionRequest = index.getAll(range);
+    const studentRequest = studentStore.getAll();
+    
+    Promise.all([
+      new Promise(resolve => {
+        sessionRequest.onsuccess = e => resolve(e.target.result);
+        sessionRequest.onerror = e => reject(e.target.error);
+      }),
+      new Promise(resolve => {
+        studentRequest.onsuccess = e => resolve(e.target.result);
+        studentRequest.onerror = e => reject(e.target.error);
+      })
+    ]).then(([sessions, students]) => {
+      const studentNames = students.map(s => s.name);
+      const reportData = [];
+      
+      // Add header row
+      reportData.push(['Nama Siswa', 'Hadir', 'Alpha', 'Sakit', 'Ijin', 'Total']);
+      
+      // Process each student
+      studentNames.forEach(name => {
+        let hadir = 0, alpha = 0, sakit = 0, ijin = 0, total = 0;
+        
+        sessions.forEach(session => {
+          const status = session.students[name];
+          if (status) {
+            total++;
+            if (status === 'Hadir') hadir++;
+            else if (status === 'Alpha') alpha++;
+            else if (status === 'Sakit') sakit++;
+            else if (status === 'Ijin') ijin++;
+          }
+        });
+        
+        reportData.push([name, hadir, alpha, sakit, ijin, total]);
+      });
+      
+      // Send to Google Sheets
+      fetch(SCRIPT_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          action: 'exportReport',
+          data: reportData,
+          startDate: start,
+          endDate: end
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          showSuccess('Rekap berhasil diexport ke Google Sheets');
+          if (data.url) {
+            window.open(data.url, '_blank');
+          }
+        } else {
+          showError('Gagal export ke Google Sheets: ' + (data.message || ''));
+        }
+      })
+      .catch(error => {
+        console.error("Error exporting to Sheets:", error);
+        showError('Gagal mengirim data ke Google Sheets');
+      });
+    }).catch(error => {
+      console.error("Error generating export data:", error);
+      showError('Gagal mempersiapkan data untuk export');
+    });
+  }
+  
+  function shareToWhatsApp() {
+    if (!sessionData || !sessionData.date) {
+      showError('Tidak ada data absensi untuk dibagikan');
+      return;
+    }
+    
+    shareSessionToWhatsApp(null, sessionData.id);
+  }
+  
+  function shareSessionToWhatsApp(event, sessionId) {
+    if (event) event.stopPropagation();
+    
+    const transaction = db.transaction(['sessions'], 'readonly');
+    const store = transaction.objectStore('sessions');
+    const request = store.get(sessionId);
+    
+    request.onsuccess = function(event) {
+      const session = event.target.result;
+      
+      if (!session) {
+        showError('Sesi tidak ditemukan');
+        return;
+      }
+      
+      // Prepare the message
+      let message = `*Assalamualaikum wr wb. berikut kegiatan dan Absensi RISET Sosial Humaniora*\n\n`;
+      message += `📅 *Tanggal:* ${formatDate(session.date)}\n`;
+      message += `⏰ *Waktu:* ${session.startTime} - ${session.endTime}\n`;
+      message += `🏫 *Kelas:* ${session.class}\n`;
+      message += `👨‍🏫 *Guru:* ${session.teacher}\n\n`;
+      message += `*DAFTAR SISWA TIDAK HADIR:*\n`;
+      
+      // Add students with non-Hadir status
+      let hasNonAttendees = false;
+      Object.entries(session.students).forEach(([name, status]) => {
+        if (status !== 'Hadir') {
+          hasNonAttendees = true;
+          message += `- ${name}: ${status}\n`;
+        }
+      });
+      
+      if (!hasNonAttendees) {
+        message += `Semua siswa hadir\n`;
+      }
+      
+      message += `\n_Dikirim dari Aplikasi Absensi Riset_`;
+      
+      // Encode the message for URL
+      const encodedMessage = encodeURIComponent(message);
+      const whatsappUrl = `https://wa.me/?text=${encodedMessage}`;
+      
+      // Open in new tab
+      window.open(whatsappUrl, '_blank');
+    };
+    
+    request.onerror = function(event) {
+      console.error("Error getting session:", event.target.error);
+      showError('Gagal memuat data sesi');
+    };
+  }
+  
+  function showSuccess(message) {
+    document.getElementById('success-text').textContent = message;
+    document.getElementById('success-message').classList.remove('hidden');
+    setTimeout(() => {
+      document.getElementById('success-message').classList.add('hidden');
+    }, 3000);
+  }
+  
+  function showError(message) {
+    document.getElementById('error-text').textContent = message;
+    document.getElementById('error-message').classList.remove('hidden');
+    setTimeout(() => {
+      document.getElementById('error-message').classList.add('hidden');
+    }, 3000);
+  }
+</script>
+
+</body>
+</html>
