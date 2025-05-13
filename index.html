@@ -448,18 +448,28 @@
     
     .add-student-form {
       display: flex;
-      gap: 8px;
-      margin-top: 16px;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap; /* agar tidak terpotong di layar kecil */
+      margin-top: 10px;
     }
-    
-    .add-student-form input {
+
+    .add-student-form input[type="text"] {
       flex: 1;
       padding: 10px;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      min-width: 200px;
     }
-    
+
     .add-student-form button {
       padding: 10px 16px;
+      font-size: 1rem;
+      border-radius: 6px;
+      cursor: pointer;
     }
+
   </style>
 </head>
 
@@ -685,7 +695,7 @@
   const SHEET_ID = "1f7f-9dUZN_9VnlZFxvUllW1xVjXDALVd2dQrQluCoik";
   const SHEET_NAME = "Absensi";
   const STUDENT_SHEET = "Siswa";
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyQ2cPl-P-j_ZC2qz3-X1Kt1Itp9DzqLyJ__OSbtej0Ui_MWgalpb68BF_SVtNqDqD0vg/exec";
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxoL3G-Q0nsKVATzTKWStdOiFqXOC_28KUzcg9ep5nVNQPbPtu4textmRvQkM84o8eGcw/exec";
 
   // Initialize the app and IndexedDB
   document.addEventListener('DOMContentLoaded', function() {
@@ -1121,7 +1131,7 @@
   }
   
   function syncStudentsWithSheets() {
-    if (!SCRIPT_URL || SCRIPT_URL === "https://script.google.com/macros/s/AKfycbyQ2cPl-P-j_ZC2qz3-X1Kt1Itp9DzqLyJ__OSbtej0Ui_MWgalpb68BF_SVtNqDqD0vg/exec") {
+    if (!SCRIPT_URL || SCRIPT_URL === "https://script.google.com/macros/s/AKfycbxoL3G-Q0nsKVATzTKWStdOiFqXOC_28KUzcg9ep5nVNQPbPtu4textmRvQkM84o8eGcw/exec") {
       console.log('Google Script URL not configured for student sync');
       return;
     }
@@ -1333,7 +1343,7 @@
   }
   
   function saveToGoogleSheets() {
-    if (!SCRIPT_URL || SCRIPT_URL === "https://script.google.com/macros/s/AKfycbyQ2cPl-P-j_ZC2qz3-X1Kt1Itp9DzqLyJ__OSbtej0Ui_MWgalpb68BF_SVtNqDqD0vg/exec") {
+    if (!SCRIPT_URL || SCRIPT_URL === "https://script.google.com/macros/s/AKfycbxoL3G-Q0nsKVATzTKWStdOiFqXOC_28KUzcg9ep5nVNQPbPtu4textmRvQkM84o8eGcw/exec") {
       console.log('Google Script URL not configured');
       return;
     }
@@ -1827,7 +1837,7 @@
       return;
     }
     
-    if (!SCRIPT_URL || SCRIPT_URL === "https://script.google.com/macros/s/AKfycbyQ2cPl-P-j_ZC2qz3-X1Kt1Itp9DzqLyJ__OSbtej0Ui_MWgalpb68BF_SVtNqDqD0vg/exec") {
+    if (!SCRIPT_URL || SCRIPT_URL === "https://script.google.com/macros/s/AKfycbxoL3G-Q0nsKVATzTKWStdOiFqXOC_28KUzcg9ep5nVNQPbPtu4textmRvQkM84o8eGcw/exec") {
       showError('Google Script URL belum dikonfigurasi');
       return;
     }
@@ -1953,7 +1963,7 @@
         message += `Semua siswa hadir\n`;
       }
       
-      message += `\n_Dikirim dari Aplikasi Absensi Riset_`;
+      message += `Terimakasih`;
       
       // Encode the message for URL
       const encodedMessage = encodeURIComponent(message);
