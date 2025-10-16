@@ -104,6 +104,10 @@
       color: var(--ios-blue);
     }
     
+    .button.sync {
+      background: #5E5CE6;
+    }
+    
     .hidden { 
       display: none; 
     }
@@ -297,6 +301,18 @@
       animation: fadeIn 0.3s ease;
     }
     
+    .info-message {
+      background: var(--ios-blue);
+      color: white;
+      padding: 16px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      animation: fadeIn 0.3s ease;
+    }
+    
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(-10px); }
       to { opacity: 1; transform: translateY(0); }
@@ -470,6 +486,76 @@
       cursor: pointer;
     }
 
+    /* Sync section styles */
+    .sync-section {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    
+    .sync-options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .sync-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px;
+      background: var(--ios-light-gray);
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    
+    .sync-option input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+    }
+    
+    .sync-option label {
+      margin-bottom: 0;
+      flex: 1;
+      cursor: pointer;
+    }
+    
+    .sync-status {
+      padding: 12px;
+      border-radius: 10px;
+      background: var(--ios-light-gray);
+      margin-top: 16px;
+    }
+    
+    .sync-status h4 {
+      margin-top: 0;
+      margin-bottom: 8px;
+    }
+    
+    .sync-progress {
+      height: 6px;
+      background: #E5E5EA;
+      border-radius: 3px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+    
+    .sync-progress-bar {
+      height: 100%;
+      background: var(--ios-blue);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+    
+    .sync-details {
+      margin-top: 12px;
+      font-size: 14px;
+    }
+    
+    .sync-details div {
+      margin-bottom: 4px;
+    }
+
   </style>
 </head>
 
@@ -492,6 +578,12 @@
     <i class="fas fa-exclamation-circle"></i>
     <span id="error-text"></span>
   </div>
+  
+  <!-- Info Message -->
+  <div id="info-message" class="info-message hidden">
+    <i class="fas fa-info-circle"></i>
+    <span id="info-text"></span>
+  </div>
 
   <!-- Home Section -->
   <div id="home-section">
@@ -506,6 +598,9 @@
     </button>
     <button class="button secondary" onclick="showAllRekap()">
       <i class="fas fa-users"></i> Rekap Semua Siswa
+    </button>
+    <button class="button sync" onclick="showSyncSection()">
+      <i class="fas fa-sync-alt"></i> Sinkronisasi Google Sheets
     </button>
     <button class="button outline" onclick="showStudentManagement()">
       <i class="fas fa-user-edit"></i> Kelola Siswa
@@ -648,6 +743,48 @@
     </div>
   </div>
   
+  <!-- Sync Section -->
+  <div id="sync-section" class="container hidden">
+    <h3><i class="fas fa-sync-alt"></i> Sinkronisasi Google Sheets</h3>
+    
+    <div class="sync-section">
+      <div class="form-group">
+        <label><i class="fas fa-cog"></i> Opsi Sinkronisasi</label>
+        <div class="sync-options">
+          <div class="sync-option">
+            <input type="checkbox" id="sync-students" checked>
+            <label for="sync-students">Sinkronisasi Data Siswa</label>
+          </div>
+          <div class="sync-option">
+            <input type="checkbox" id="sync-sessions" checked>
+            <label for="sync-sessions">Sinkronisasi Data Absensi</label>
+          </div>
+          <div class="sync-option">
+            <input type="checkbox" id="sync-overwrite" checked>
+            <label for="sync-overwrite">Timpa data lokal dengan data dari Google Sheets</label>
+          </div>
+        </div>
+      </div>
+      
+      <button class="button sync" onclick="startSync()">
+        <i class="fas fa-sync-alt"></i> Mulai Sinkronisasi
+      </button>
+      
+      <div class="sync-status" id="sync-status">
+        <h4>Status Sinkronisasi</h4>
+        <div id="sync-status-text">Belum ada sinkronisasi</div>
+        <div class="sync-progress">
+          <div class="sync-progress-bar" id="sync-progress-bar"></div>
+        </div>
+        <div class="sync-details" id="sync-details"></div>
+      </div>
+      
+      <button class="button outline" onclick="goHome()">
+        <i class="fas fa-arrow-left"></i> Kembali
+      </button>
+    </div>
+  </div>
+  
   <!-- Edit Student Modal -->
   <div id="edit-student-modal" class="container hidden" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000; width: 90%; max-width: 400px;">
     <h3><i class="fas fa-user-edit"></i> Edit Siswa</h3>
@@ -726,7 +863,7 @@
 
   // Initialize IndexedDB
   function initDB() {
-    const request = indexedDB.open('AbsensiDB', 2); // Version 2 for student management
+    const request = indexedDB.open('AbsensiDB', 3); // Version 3 for sync metadata
     
     request.onerror = function(event) {
       console.error("Database error:", event.target.error);
@@ -755,6 +892,11 @@
       if (oldVersion < 2) {
         // Upgrade to version 2 - no changes needed as we already have students store
       }
+      
+      if (oldVersion < 3) {
+        // Create object store for sync metadata
+        const syncStore = db.createObjectStore('sync', { keyPath: 'id' });
+      }
     };
   }
 
@@ -780,8 +922,10 @@
     document.getElementById('all-rekap-section').classList.add('hidden');
     document.getElementById('whatsapp-section').classList.add('hidden');
     document.getElementById('student-management-section').classList.add('hidden');
+    document.getElementById('sync-section').classList.add('hidden');
     document.getElementById('success-message').classList.add('hidden');
     document.getElementById('error-message').classList.add('hidden');
+    document.getElementById('info-message').classList.add('hidden');
     
     // Hide back button on home screen
     if (document.getElementById('home-section').classList.contains('hidden')) {
@@ -856,6 +1000,12 @@
     loadStudentList();
   }
   
+  function showSyncSection() {
+    hideAll();
+    document.getElementById('sync-section').classList.remove('hidden');
+    updateSyncStatus();
+  }
+  
   function closeEditModal() {
     document.getElementById('edit-student-modal').classList.add('hidden');
     document.getElementById('modal-overlay').classList.add('hidden');
@@ -866,6 +1016,332 @@
     document.getElementById('edit-student-name').value = student.name;
     document.getElementById('edit-student-modal').classList.remove('hidden');
     document.getElementById('modal-overlay').classList.remove('hidden');
+  }
+
+  // --- Sync Functions ---
+  function updateSyncStatus() {
+    const transaction = db.transaction(['sync'], 'readonly');
+    const store = transaction.objectStore('sync');
+    const request = store.get('lastSync');
+    
+    request.onsuccess = function(event) {
+      const lastSync = event.target.result;
+      const statusText = document.getElementById('sync-status-text');
+      const details = document.getElementById('sync-details');
+      
+      if (lastSync) {
+        const lastSyncDate = new Date(lastSync.timestamp);
+        statusText.textContent = `Terakhir sinkronisasi: ${lastSyncDate.toLocaleString('id-ID')}`;
+        
+        details.innerHTML = `
+          <div><strong>Data siswa:</strong> ${lastSync.students || 0} siswa</div>
+          <div><strong>Data absensi:</strong> ${lastSync.sessions || 0} sesi</div>
+        `;
+      } else {
+        statusText.textContent = 'Belum pernah sinkronisasi';
+        details.innerHTML = '';
+      }
+    };
+  }
+  
+  function updateSyncProgress(percent, status, details) {
+    document.getElementById('sync-progress-bar').style.width = percent + '%';
+    document.getElementById('sync-status-text').textContent = status;
+    
+    if (details) {
+      document.getElementById('sync-details').innerHTML = details;
+    }
+  }
+  
+  function startSync() {
+    const syncStudents = document.getElementById('sync-students').checked;
+    const syncSessions = document.getElementById('sync-sessions').checked;
+    const overwriteLocal = document.getElementById('sync-overwrite').checked;
+    
+    if (!syncStudents && !syncSessions) {
+      showError('Pilih setidaknya satu opsi sinkronisasi');
+      return;
+    }
+    
+    updateSyncProgress(0, 'Mempersiapkan sinkronisasi...');
+    
+    // Show loading state on sync button
+    const syncButton = document.querySelector('#sync-section .button.sync');
+    const originalText = syncButton.innerHTML;
+    syncButton.innerHTML = '<div class="loading"></div> Memproses...';
+    syncButton.disabled = true;
+    
+    // Start sync process
+    performSync(syncStudents, syncSessions, overwriteLocal)
+      .then(result => {
+        updateSyncProgress(100, 'Sinkronisasi selesai!');
+        showSuccess('Sinkronisasi berhasil');
+        
+        // Update last sync info
+        const transaction = db.transaction(['sync'], 'readwrite');
+        const store = transaction.objectStore('sync');
+        store.put({
+          id: 'lastSync',
+          timestamp: Date.now(),
+          students: result.students,
+          sessions: result.sessions
+        });
+        
+        // Reload data if needed
+        if (syncStudents) {
+          loadStudents();
+        }
+        
+        // Update status display
+        updateSyncStatus();
+      })
+      .catch(error => {
+        console.error('Sync error:', error);
+        updateSyncProgress(0, 'Sinkronisasi gagal');
+        showError('Sinkronisasi gagal: ' + error.message);
+      })
+      .finally(() => {
+        // Restore sync button
+        syncButton.innerHTML = originalText;
+        syncButton.disabled = false;
+      });
+  }
+  
+  function performSync(syncStudents, syncSessions, overwriteLocal) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let studentsCount = 0;
+        let sessionsCount = 0;
+        
+        // Sync students if requested
+        if (syncStudents) {
+          updateSyncProgress(30, 'Mengunduh data siswa...');
+          const sheetStudents = await loadStudentsFromSheets();
+          
+          if (overwriteLocal) {
+            updateSyncProgress(50, 'Menyimpan data siswa...');
+            await replaceAllStudents(sheetStudents);
+            studentsCount = sheetStudents.length;
+          } else {
+            updateSyncProgress(50, 'Menggabungkan data siswa...');
+            await mergeStudents(sheetStudents);
+            
+            // Count students after merge
+            const transaction = db.transaction(['students'], 'readonly');
+            const store = transaction.objectStore('students');
+            const request = store.getAll();
+            request.onsuccess = function(event) {
+              studentsCount = event.target.result.length;
+            };
+          }
+        }
+        
+        // Sync sessions if requested
+        if (syncSessions) {
+          updateSyncProgress(70, 'Mengunduh data absensi...');
+          const sheetSessions = await loadSessionsFromSheets();
+          
+          if (overwriteLocal) {
+            updateSyncProgress(90, 'Menyimpan data absensi...');
+            await replaceAllSessions(sheetSessions);
+            sessionsCount = sheetSessions.length;
+          } else {
+            updateSyncProgress(90, 'Menggabungkan data absensi...');
+            await mergeSessions(sheetSessions);
+            
+            // Count sessions after merge
+            const transaction = db.transaction(['sessions'], 'readonly');
+            const store = transaction.objectStore('sessions');
+            const request = store.getAll();
+            request.onsuccess = function(event) {
+              sessionsCount = event.target.result.length;
+            };
+          }
+        }
+        
+        resolve({
+          students: studentsCount,
+          sessions: sessionsCount
+        });
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+  
+  function loadStudentsFromSheets() {
+    return new Promise((resolve, reject) => {
+      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${STUDENT_SHEET}`;
+      
+      fetch(url)
+        .then(res => res.text())
+        .then(text => {
+          try {
+            const json = JSON.parse(text.substr(47).slice(0, -2));
+            const sheetStudents = json.table.rows.map(row => row.c[0].v);
+            resolve(sheetStudents);
+          } catch (error) {
+            reject(new Error('Gagal memproses data siswa dari Google Sheets'));
+          }
+        })
+        .catch(err => {
+          reject(new Error('Gagal mengunduh data siswa dari Google Sheets'));
+        });
+    });
+  }
+  
+  function loadSessionsFromSheets() {
+    return new Promise((resolve, reject) => {
+      if (!SCRIPT_URL || SCRIPT_URL === "https://script.google.com/macros/s/AKfycbxoL3G-Q0nsKVATzTKWStdOiFqXOC_28KUzcg9ep5nVNQPbPtu4textmRvQkM84o8eGcw/exec") {
+        reject(new Error('Google Script URL belum dikonfigurasi'));
+        return;
+      }
+      
+      fetch(SCRIPT_URL + '?action=getAllSessions', {
+        method: 'GET'
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          resolve(data.sessions || []);
+        } else {
+          reject(new Error(data.message || 'Gagal mengambil data absensi'));
+        }
+      })
+      .catch(err => {
+        reject(new Error('Gagal mengunduh data absensi dari Google Sheets'));
+      });
+    });
+  }
+  
+  function replaceAllStudents(students) {
+    return new Promise((resolve, reject) => {
+      const transaction = db.transaction(['students'], 'readwrite');
+      const store = transaction.objectStore('students');
+      
+      // Clear existing students
+      const clearRequest = store.clear();
+      
+      clearRequest.onsuccess = function() {
+        // Add new students
+        students.forEach((name, index) => {
+          store.put({ id: index + 1, name: name });
+        });
+        
+        transaction.oncomplete = function() {
+          resolve();
+        };
+        
+        transaction.onerror = function(event) {
+          reject(event.target.error);
+        };
+      };
+      
+      clearRequest.onerror = function(event) {
+        reject(event.target.error);
+      };
+    });
+  }
+  
+  function mergeStudents(newStudents) {
+    return new Promise((resolve, reject) => {
+      const transaction = db.transaction(['students'], 'readwrite');
+      const store = transaction.objectStore('students');
+      
+      // Get existing students
+      const request = store.getAll();
+      
+      request.onsuccess = function(event) {
+        const existingStudents = event.target.result.map(s => s.name);
+        const existingIds = event.target.result.map(s => s.id);
+        const maxId = existingIds.length > 0 ? Math.max(...existingIds) : 0;
+        
+        let nextId = maxId + 1;
+        
+        // Add new students that don't exist
+        newStudents.forEach(name => {
+          if (!existingStudents.includes(name)) {
+            store.put({ id: nextId, name: name });
+            nextId++;
+          }
+        });
+        
+        transaction.oncomplete = function() {
+          resolve();
+        };
+        
+        transaction.onerror = function(event) {
+          reject(event.target.error);
+        };
+      };
+      
+      request.onerror = function(event) {
+        reject(event.target.error);
+      };
+    });
+  }
+  
+  function replaceAllSessions(sessions) {
+    return new Promise((resolve, reject) => {
+      const transaction = db.transaction(['sessions'], 'readwrite');
+      const store = transaction.objectStore('sessions');
+      
+      // Clear existing sessions
+      const clearRequest = store.clear();
+      
+      clearRequest.onsuccess = function() {
+        // Add new sessions
+        sessions.forEach(session => {
+          store.put(session);
+        });
+        
+        transaction.oncomplete = function() {
+          resolve();
+        };
+        
+        transaction.onerror = function(event) {
+          reject(event.target.error);
+        };
+      };
+      
+      clearRequest.onerror = function(event) {
+        reject(event.target.error);
+      };
+    });
+  }
+  
+  function mergeSessions(newSessions) {
+    return new Promise((resolve, reject) => {
+      const transaction = db.transaction(['sessions'], 'readwrite');
+      const store = transaction.objectStore('sessions');
+      
+      // Get existing sessions
+      const request = store.getAll();
+      
+      request.onsuccess = function(event) {
+        const existingSessions = event.target.result;
+        
+        // Add new sessions that don't exist (based on ID)
+        newSessions.forEach(session => {
+          const exists = existingSessions.some(s => s.id === session.id);
+          if (!exists) {
+            store.put(session);
+          }
+        });
+        
+        transaction.oncomplete = function() {
+          resolve();
+        };
+        
+        transaction.onerror = function(event) {
+          reject(event.target.error);
+        };
+      };
+      
+      request.onerror = function(event) {
+        reject(event.target.error);
+      };
+    });
   }
 
   // --- Student Management Functions ---
@@ -1194,47 +1670,6 @@
         console.error("Error loading students:", event.target.error);
         reject(event.target.error);
       };
-    });
-  }
-  
-  function loadStudentsFromSheets() {
-    return new Promise((resolve, reject) => {
-      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${STUDENT_SHEET}`;
-      
-      fetch(url)
-        .then(res => res.text())
-        .then(text => {
-          const json = JSON.parse(text.substr(47).slice(0, -2));
-          const sheetStudents = json.table.rows.map(row => row.c[0].v);
-          
-          // Save to IndexedDB
-          const transaction = db.transaction(['students'], 'readwrite');
-          const store = transaction.objectStore('students');
-          
-          sheetStudents.forEach((name, index) => {
-            store.put({ id: index + 1, name: name });
-          });
-          
-          students = sheetStudents;
-          resolve(students);
-        })
-        .catch(err => {
-          console.error("Error loading students from Sheets:", err);
-          // If we can't load from Sheets, initialize with some default students
-          const defaultStudents = [
-            "Siswa 1", "Siswa 2", "Siswa 3"
-          ];
-          
-          const transaction = db.transaction(['students'], 'readwrite');
-          const store = transaction.objectStore('students');
-          
-          defaultStudents.forEach((name, index) => {
-            store.put({ id: index + 1, name: name });
-          });
-          
-          students = defaultStudents;
-          resolve(students);
-        });
     });
   }
 
@@ -1992,6 +2427,14 @@
     document.getElementById('error-message').classList.remove('hidden');
     setTimeout(() => {
       document.getElementById('error-message').classList.add('hidden');
+    }, 3000);
+  }
+  
+  function showInfo(message) {
+    document.getElementById('info-text').textContent = message;
+    document.getElementById('info-message').classList.remove('hidden');
+    setTimeout(() => {
+      document.getElementById('info-message').classList.add('hidden');
     }, 3000);
   }
 </script>
